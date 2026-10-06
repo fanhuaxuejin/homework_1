@@ -112,33 +112,10 @@ Agent 的能力边界由这 6 个工具决定（新增工具见 `tools/__init__.
 | `run_python` | 在受控子进程中执行小段代码 | 硬超时 + 输出截断 + 剔除含密钥的环境变量 |
 | `write_report` | 把结论写成 Markdown 到 `reports/` | 文件名白名单化，防路径穿越 |
 
----
-
-## 五、演示样例
-
-`demo/` 目录下的文件都是**刻意设计的**，用来展示 Agent 在不同情况下的表现：
-
-| 文件 | 用途 |
-|------|------|
-| `sample_good.py` | 正常代码，看它能否讲清设计意图与隐式假设 |
-| `sample_buggy.py` | **埋了 8 个真实 Bug**（可变默认参数、浮点精度、除零、宽泛 except、闭包捕获、SQL 注入、时区混用等），检验问题发现能力 |
-| `app.py` + `utils.py` | 跨文件调用链，验证 `search_code` 的定位能力 |
-| `sample_frontend.js` | 非 Python 文件，验证通用解析分支 |
-| `sample_syntax_error.py` | 语法错误文件，验证边界情况处理 |
-| `sample_gbk_中文.py` | GBK 编码 + 中文文件名，验证编码容错 |
-
-推荐演示序列（1 分钟视频可用）：
-
-```powershell
-python main.py --check                                  # 1. 环境就绪（免费）
-python main.py "解释 demo/sample_buggy.py"               # 2. 发现埋的 Bug（核心亮点）
-python main.py "normalize_record 在哪里被调用？"          # 3. 跨文件检索（体现 Agent 自主性）
-python main.py "示例：空列表传给 calc_total 会发生什么？"  # 4. run_python 实际验证
-```
 
 ---
 
-## 六、项目结构
+## 五、项目结构
 
 ```
 code-agent/
@@ -169,7 +146,7 @@ code-agent/
 
 ---
 
-## 七、模型配置
+## 六、模型配置
 
 主力使用 **DeepSeek**，同时支持一行切换其他厂商（见 `config.py` 的 `PROVIDERS`）。
 
@@ -182,13 +159,13 @@ LLM_TIMEOUT=120
 LLM_MAX_RETRIES=4
 ```
 
-> ⚠️ **模型名注意**：DeepSeek 当前可用模型为 `deepseek-flash`（快、便宜）与 `deepseek-v4-pro`（更强）。
+> ⚠️ **模型名注意**：DeepSeek 当前可用模型为 `deepseek-flash`与 `deepseek-v4-pro`。
 > 旧的 `deepseek-chat` / `deepseek-reasoner` **已下线**，写成旧名会报 404。
 > 详见 [DeepSeek Models & Pricing](https://api-docs.deepseek.com/quick_start/pricing/)。
 
 ---
 
-## 八、常见问题
+## 七、常见问题
 
 **Q：报错说缺少依赖 openai？**
 执行 `python -m pip install -r requirements.txt`。
@@ -210,7 +187,7 @@ PowerShell 默认代码页不是 UTF-8，先执行 `chcp 65001`，或设置 `$en
 
 ---
 
-## 九、安全与隐私说明
+## 八、安全与隐私说明
 
 - **只读优先**：Agent 默认不修改用户任何文件，唯一的写操作是 `write_report`，且被限制在工作目录的 `reports/` 子目录内，文件名经过白名单化处理。
 - **路径边界**：所有文件访问都被限制在 `--workspace` 指定的目录内，`../../` 之类的越权路径会被拒绝。
