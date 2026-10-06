@@ -330,8 +330,19 @@ check("默认 provider 为 deepseek", settings.provider.name == "deepseek", sett
 check("默认模型为 deepseek-flash", settings.model == "deepseek-flash", settings.model)
 check("base_url 正确", settings.provider.base_url == "https://api.deepseek.com", settings.provider.base_url)
 check("思考模式默认开启", settings.thinking is True, str(settings.thinking))
-check("Key 缺失时 has_api_key 为假（离线环境预期）", settings.has_api_key is False, "（若你已配置 Key 则为 True，属正常）")
 check("工作目录解析为绝对路径", settings.workspace.is_absolute(), str(settings.workspace))
+# 注意：这里不断言"Key 必须存在"或"必须不存在"，因为两种环境都合法：
+#   未配置 Key 时 has_api_key 应为 False（提示用户去配）
+#   已配置 Key 时 has_api_key 应为 True（且不能把占位符误判为有效）
+_placeholder = "sk-" + "请替换为你的真实Key"
+if settings.api_key == _placeholder:
+    check("占位符 Key 不应被误判为有效", settings.has_api_key is False, "占位符被当成有效 Key")
+else:
+    check(
+        "has_api_key 与 api_key 是否为空保持一致",
+        settings.has_api_key == bool(settings.api_key),
+        f"api_key 长度={len(settings.api_key)} has_api_key={settings.has_api_key}",
+    )
 
 # 未知 provider 应回退而不是崩溃
 os.environ["LLM_PROVIDER"] = "nonexistent_provider"
