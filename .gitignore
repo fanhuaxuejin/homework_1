@@ -1,0 +1,26 @@
+# 密钥 —— 绝对不能提交
+.env
+
+# Python
+__pycache__/
+.deps/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Agent 运行时产物
+reports/
+.agent_memory/
+.agent_tmp/
+*.log
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,41 @@
+# 统一行尾规范，避免 Windows/Linux 协作时出现"整个文件都变了"的伪差异。
+# 原则：仓库内一律存 LF，检出时不自动改写。
+
+* text=auto eol=lf
+
+# 明确按文本处理（强制 LF）
+*.py    text eol=lf
+*.pyi   text eol=lf
+*.js    text eol=lf
+*.ts    text eol=lf
+*.json  text eol=lf
+*.md    text eol=lf
+*.txt   text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+*.toml  text eol=lf
+*.ini   text eol=lf
+*.cfg   text eol=lf
+
+# 二进制文件：禁止行尾转换与 diff
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.webp  binary
+*.ico   binary
+*.pdf   binary
+*.zip   binary
+*.rar   binary
+*.7z    binary
+*.xlsx  binary
+*.docx  binary
+*.pptx  binary
+
+# Windows 批处理需要 CRLF 才能正常运行
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+*.ps1   text eol=crlf
+
+# 让 git 把 .env 一类文件识别为敏感文本（不参与语言统计）
+.env*    text eol=lf

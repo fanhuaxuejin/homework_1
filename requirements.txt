@@ -1,0 +1,9 @@
+# 代码解释 Agent —— 依赖
+# 说明：刻意保持极简。真正的 Agent 循环是本项目自己实现的（见 agent/core.py），
+#       不依赖 LangChain 等框架，以便在 Design.md 中清晰阐述架构。
+
+openai>=1.40.0          # 统一 OpenAI 兼容协议客户端，DeepSeek 直接复用
+python-dotenv>=1.0.0    # 从 .env 读取 API Key，避免硬编码
+
+# 可选：Web 界面（不装也能用 CLI）
+# gradio>=4.0.0
