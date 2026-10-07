@@ -102,14 +102,14 @@ assistant_message["tool_calls"] = [{
 
 **（2）工具失败不抛异常，而是回传给模型**
 
-`tools/invoke()` 捕获所有异常并转成可读文本。这是**有意的设计而非偷懒**：
+`tools/invoke()` 捕获所有异常并转成可读文本。
 
 ```
 模型调用 read_code(path="utils.py")  →  [错误] 文件不存在：utils.py。
 模型看到错误 →  改用 list_dir(".") 确认实际路径 →  重新读取成功
 ```
 
-如果这里抛异常，整个 Agent 就崩了；回传错误则让模型有机会**自我纠正**——这正是 Agent 相对"单次问答"的核心价值。
+如果这里抛异常，整个 Agent 就崩了；回传错误则让模型有机会**自我纠正**。
 
 **（3）三重防护，防止死循环与费用失控**
 
@@ -332,7 +332,6 @@ if resolved != ws and ws not in resolved.parents:
 | **支持 Function Calling** | Agent 循环依赖 `tool_calls` 结构化返回；不支持则要手写 JSON 解析，脆弱且易错 |
 | 上下文 ≥ 128K | 需容纳整份文件 + 工具 schema + 多轮对话 |
 | 提供 OpenAI 兼容接口 | 一套 SDK 通用，切换成本为零 |
-| 国内可直连 | 交作业与演示阶段网络稳定是刚需 |
 
 ### 6.2 候选对比
 
@@ -402,7 +401,7 @@ if resolved != ws and ws not in resolved.parents:
 3. **解释结果缓存**：同一文件的解释结果可按"文件内容哈希"缓存，避免重复付费。
 4. **Web 界面**：`agent/core.py` 与渲染层已解耦，接 Gradio/Streamlit 只需实现一个新的 `on_event` 渲染器，约 50 行。
 5. **答案质量自评**：让模型在输出后自检"每个行号引用是否都来自工具返回结果"，形成一道自动化的幻觉防线。
-6. **工具级权限确认**：对 `run_python` 这类有副作用的工具，加一道人工确认（human-in-the-loop）。
+6. **工具级权限确认**：对 `run_python` 这类有副作用的工具，加一道人工确认。
 
 ---
 
